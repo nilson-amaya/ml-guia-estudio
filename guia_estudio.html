@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guía de Estudio — Aprendizaje Automático 1</title>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+  :root {
+    --parcial: #2563eb;
+    --parcial-light: #dbeafe;
+    --final: #7c3aed;
+    --final-light: #ede9fe;
+    --green: #16a34a;
+    --green-light: #dcfce7;
+    --red: #dc2626;
+    --red-light: #fee2e2;
+    --gray: #6b7280;
+    --bg: #f8fafc;
+    --card: #ffffff;
+    --border: #e2e8f0;
+    --text: #1e293b;
+    --text-light: #64748b;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #7c3aed 100%);
+    color: white;
+    padding: 2rem 2rem 1.5rem;
+  }
+  header h1 { font-size: 1.6rem; font-weight: 700; margin-bottom: 0.25rem; }
+  header p  { opacity: 0.85; font-size: 0.95rem; }
+
+  /* ── NAV ── */
+  nav {
+    background: white;
+    border-bottom: 1px solid var(--border);
+    padding: 0.75rem 2rem;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  nav a {
+    padding: 0.35rem 0.9rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    border: 1.5px solid transparent;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+  nav a.parcial { color: var(--parcial); border-color: var(--parcial); }
+  nav a.parcial:hover { background: var(--parcial); color: white; }
+  nav a.final   { color: var(--final);   border-color: var(--final);   }
+  nav a.final:hover   { background: var(--final);   color: white; }
+
+  /* ── MAIN ── */
+  main { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  /* ── EXAM BADGE ── */
+  .badge {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.6rem;
+  }
+  .badge.parcial { background: var(--parcial-light); color: var(--parcial); }
+  .badge.final   { background: var(--final-light);   color: var(--final);   }
+
+  /* ── SECTION ── */
+  section { margin-bottom: 2.5rem; scroll-margin-top: 60px; }
+  section h2 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--border);
+  }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+  }
+  .card-header {
+    padding: 0.9rem 1.2rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+    transition: background 0.15s;
+  }
+  .card-header:hover { background: var(--bg); }
+  .card-header h3 { font-size: 1rem; font-weight: 600; }
+  .card-arrow { font-size: 0.8rem; color: var(--gray); transition: transform 0.2s; }
+  .card.open .card-arrow { transform: rotate(180deg); }
+  .card-body {
+    display: none;
+    padding: 1rem 1.2rem 1.2rem;
+    border-top: 1px solid var(--border);
+  }
+  .card.open .card-body { display: block; }
+
+  /* ── CONTENT ELEMENTS ── */
+  .concept { margin-bottom: 1rem; }
+  .concept strong { color: var(--text); }
+  .concept p { color: var(--text-light); margin-top: 0.2rem; font-size: 0.92rem; }
+
+  .formula-box {
+    background: #f1f5f9;
+    border-left: 3px solid var(--parcial);
+    border-radius: 0 6px 6px 0;
+    padding: 0.7rem 1rem;
+    margin: 0.8rem 0;
+    font-size: 0.95rem;
+    overflow-x: auto;
+  }
+  .formula-box.purple { border-left-color: var(--final); }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+    margin: 0.8rem 0;
+  }
+  th {
+    background: var(--bg);
+    padding: 0.5rem 0.8rem;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 2px solid var(--border);
+  }
+  td {
+    padding: 0.45rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+
+  /* ── FLASHCARDS ── */
+  .flashcard-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+    margin-top: 0.5rem;
+  }
+  @media (max-width: 600px) { .flashcard-grid { grid-template-columns: 1fr; } }
+
+  .flashcard {
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    min-height: 90px;
+    position: relative;
+    overflow: hidden;
+  }
+  .fc-front, .fc-back {
+    padding: 0.9rem 1rem;
+    width: 100%;
+  }
+  .fc-front {
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+  }
+  .fc-back {
+    display: none;
+    font-size: 0.84rem;
+    color: var(--text-light);
+    background: var(--bg);
+    border-top: 1px dashed var(--border);
+  }
+  .flashcard.revealed .fc-back { display: block; }
+  .fc-hint {
+    font-size: 0.72rem;
+    color: var(--gray);
+    position: absolute;
+    bottom: 0.4rem;
+    right: 0.7rem;
+  }
+  .flashcard.parcial { border-color: #93c5fd; }
+  .flashcard.final   { border-color: #c4b5fd; }
+  .flashcard.revealed.parcial { background: var(--parcial-light); }
+  .flashcard.revealed.final   { background: var(--final-light); }
+
+  /* ── ALERT / TIP ── */
+  .tip {
+    background: var(--green-light);
+    border-left: 3px solid var(--green);
+    border-radius: 0 6px 6px 0;
+    padding: 0.6rem 1rem;
+    font-size: 0.88rem;
+    margin: 0.8rem 0;
+    color: #14532d;
+  }
+  .warn {
+    background: var(--red-light);
+    border-left: 3px solid var(--red);
+    border-radius: 0 6px 6px 0;
+    padding: 0.6rem 1rem;
+    font-size: 0.88rem;
+    margin: 0.8rem 0;
+    color: #7f1d1d;
+  }
+
+  ul { padding-left: 1.2rem; }
+  ul li { margin-bottom: 0.3rem; font-size: 0.92rem; color: var(--text-light); }
+  ul li strong { color: var(--text); }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 0.8rem 0; }
+  @media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+
+  .pill {
+    display: inline-block;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.1rem 0.5rem;
+    font-size: 0.8rem;
+    font-family: monospace;
+    color: var(--text);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Guía de Estudio — Aprendizaje Automático 1</h1>
+  <p>Nilson Giovanni Amaya Santana &nbsp;·&nbsp; Maestría en Matemáticas Aplicadas y Ciencias de la Computación &nbsp;·&nbsp; Universidad del Rosario &nbsp;·&nbsp; 2026</p>
+</header>
+
+<nav>
+  <a class="parcial" href="#s1">Regresión Lineal</a>
+  <a class="parcial" href="#s2">Reg. Logística / ROC</a>
+  <a class="parcial" href="#s3">Validación Cruzada</a>
+  <a class="parcial" href="#s4">Árboles / Pruning</a>
+  <a class="final"   href="#s5">KNN Regresor</a>
+  <a class="final"   href="#s6">K-means</a>
+  <a class="final"   href="#s7">DBSCAN</a>
+  <a class="final"   href="#s8">Redes Neuronales</a>
+</nav>
+
+<main>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  SECCIÓN 1 — REGRESIÓN LINEAL                          -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section id="s1">
+  <span class="badge parcial">Tercer Parcial</span>
+  <h2>1 — Regresión Lineal y Métricas de Error</h2>
+
+  <div class="card open">
+    <div class="card-header" onclick="toggle(this)">
+      <h3>Mínimos cuadrados ordinarios (OLS)</h3>
+      <span class="card-arrow">▼</span>
+    </div>
+    <div class="card-body">
+      <p style="font-size:0.92rem;color:var(--text-light);margin-bottom:0.8rem">
+        Se buscan los coeficientes que minimizan la suma de errores al cuadrado entre los valores reales y predichos.
+      </p>
+      <div class="formula-box">
+        \[ \text{SSR} = \sum_{i=1}^n (y^{(i)} - \hat{y}^{(i)})^2 \]
+        \[ \hat{\beta}_1 = \frac{\sum(x_i - \bar{x})(y_i - \bar{y})}{\sum(x_i - \bar{x})^2}, \qquad \hat{\beta}_0 = \bar{y} - \hat{\beta}_1 \bar{x} \]
+        \[ \hat{\boldsymbol{\beta}} = (X^\top X)^{-1} X^\top y \quad \text{(forma matricial)} \]
+      </div>
+      <div class="tip">El estimador OLS es BLUE (Best Linear Unbiased Estimator) bajo los supuestos de Gauss-Markov.</div>
+      <div class="two-col">
+        <div>
+          <strong style="font-size:0.9rem">Cuadrado vs. Valor Absoluto</strong>
+          <ul style="margin-top:0.4rem">
+            <li><strong>Cuadrado:</strong> solución cerrada, diferenciable, sensible a outliers</li>
+            <li><strong>Absoluto (LAD):</strong> robusto a outliers, no diferenciable en 0, requiere optimización iterativa</li>
+          </ul>
+        </div>
+        <div>
+          <strong style="font-size:0.9rem">¿Por qué el cuadrado arrastra más?</strong>
+          <ul style="margin-top:0.4rem">
+            <li>Error \(e=10\) → cuadrado penaliza 100, absoluto penaliza 10</li>
+            <li>El crecimiento cuadrático amplifica outliers exponencialmente</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header" onclick="toggle(this)">
+      <h3>Métricas de error: MSE, RMSE y MAE</h3>
+      <span class="card-arrow">▼</span>
+    </div>
+    <div class="card-body">
+      <div class="formula-box">
+        \[ \text{MSE} = \frac{1}{n}\sum(y_i - \hat{y}_i)^2 \quad \text{(unidades}^2\text{)} \]
+        \[ \text{RMSE} = \sqrt{\text{MSE}} \quad \text{(mismas unidades que } y\text{)} \]
+        \[ \text{MAE} = \frac{1}{n}\sum|y_i - \hat{y}_i| \quad \text{(robusto a outliers)} \]
+      </div>
+      <table>
+        <tr><th>Métrica</th><th>Ventaja</th><th>Cuándo usarla</th></tr>
+        <tr><td>MSE</td><td>Diferenciable, penaliza errores grandes</td><td>Optimización interna del modelo</td></tr>
+        <tr><td>RMSE</td><td>Interpretable (mismas unidades que y)</td><td>Reportar a clientes no técnicos</td></tr>
+        <tr><td>MAE</td><td>Robusto a outliers</td><td>Cuando hay errores extremos inevitables</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header" onclick="toggle(this)">
+      <h3>⚡ Preguntas frecuentes</h3>
+      <span class="card-arrow">▼</span>
+    </div>
+    <div class="card-body">
+      <div class="flashcard-grid">
+        <div class="flashcard parcial" onclick="reveal(this)">
+          <div class="fc-front">¿Por qué se usa SSR y no la suma de valores absolutos?</div>
+          <div class="fc-back">Dos razones: (1) matemática — SSR tiene solución analítica cerrada y el estimador es BLUE; (2) computacional — SSR es convexa y diferenciable en todo punto, lo que permite usar gradiente directamente.</div>
+          <span class="fc-hint">clic para ver</span>
+        </div>
+        <div class="flashcard parcial" onclick="reveal(this)">
+          <div class="fc-front">¿Podemos concluir causalidad con regresión lineal?</div>
+          <div class="fc-back">No. La regresión captura correlaciones en datos observacionales, no relaciones causales. Para inferir causalidad se requiere diseño experimental (ensayo controlado aleatorizado) o métodos causales específicos.</div>
+          <span class="fc-hint">clic para ver</span>
+        </div>
+        <div class="flashcard parcial" onclick="reveal(this)">
+          <div class="fc-front">¿Qué mide R² y cuál es su rango?</div>
+          <div class="fc-back">R² mide la proporción de varianza de y explicada por el modelo. Rango: (−∞, 1]. R²=1 → ajuste perfecto; R²=0 → el modelo no mejora al predictor nulo (media); R²&lt;0 → el modelo es peor que predecir siempre la media.</div>
+          <span class="fc-hint">clic para ver</span>
+        </div>
+        <div class="flashcard parcial" onclick="reveal(this)">
+          <div class="fc-front">¿Cuándo preferiría MAE sobre RMSE?</div>
+          <div class="fc-back">Cuando el dataset tiene outliers que no queremos que dominen la métrica. El MAE pondera todos los errores por igual, sin amplificar los grandes. Ejemplo: predicción de demanda con picos estacionales.</div>
+          <span class="fc-hint">clic para ver</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  SECCIÓN 2 — REGRESIÓN LOGÍSTICA / ROC                 -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section id="s2">
+  <span class="badge parcial">Tercer Parcial</span>
+  <h2>2 — Regresión Logística, Curva ROC y Umbrales</h2>
+
+  <div class="card open">
+    <div class="card-header" onclick="toggle(this)">
+      <h3>Frontera de decisión</h3>
+      <span class="card-arrow">▼</span>
+    </div>
+    <div class="card-body">
+      <div class="formula-box">
+        \[ \pi(x) = \sigma(\beta_0 + \beta_1 x_1 + \cdots + \beta_p x_p), \quad \sigma(z) = \frac{1}{1+e^{-z}} \]
+        \[ \text{Frontera: } \beta_0 + \beta_1 x_1 + \cdots + \beta_p x_p = \ln\!\left(\frac{\alpha}{1-\alpha}\right) \]
+      </div>
+      <ul>
+        <li>La frontera es siempre un <strong>hiperplano</strong> (recta en 2D)</li>
+        <li>Con \(\alpha = 0.5\) → frontera pasa por donde la suma ponderada es 0</li>
+        <li>Bajar \(\alpha\) → modelo más sensible (clasifica más como positivo)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header" onclick="toggle(this)">
+      <h3>Matriz de confusión y métricas</h3>
+      <span class="card-arrow">▼</span>
+    </div>
+    <div class="card-body">
+      <table>
+        <tr><th></th><th>Pred. 1</th><th>Pred. 0</th></tr>
+        <tr><td><strong>Real 1</strong></td><td>TP (Verdadero Positivo)</td><td>FN (Falso Negativo)</td></tr>
+        <tr><td><strong>Real 0</strong></td><td>FP (Falso Positivo)</td><td>TN (Verdadero Negativo)</td></tr>
+      </table>
+      <div class="formula-box">
+        \[ \text{Accuracy} = \frac{TP+TN}{n}, \quad \text{Precision} = \frac{TP}{TP+FP}, \quad \text{Recall} = \frac{TP}{TP+FN} \]
+        \[ F_1 = \frac{2 \cdot \text{Prec} \cdot \text{Rec}}{\text{Prec}+\text{Rec}}, \quad \text{FPR} = \frac{FP}{FP+TN} \]
+      </div>
+      <div class="warn">FN muy costoso → bajar umbral τ para maximizar Recall a costa de Precision.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header" onclick="toggle(this)">
+      <h3>Curva ROC y AUC</h3>
+      <span class="card-arrow">▼</span>
+    </div>
+    <div class="card-body">
+      <ul>
+        <li>La curva ROC traza <strong>TPR vs. FPR</strong> para todos los umbrales posibles</li>
+        <li>AUC = área bajo la curva. AUC=1 → clasificador perfecto; AUC=0.5 → clasificador aleatorio</li>
+        <li>Se calcula con la <strong>regla del trapecio</strong>: \(\text{AUC} = \sum_k \frac{\Delta\text{FPR}_k}{2}(\text{TPR}_k + \text{TPR}_{k-1})\)</li>
+      </ul>
+      <div class="tip">Con costo asimétrico: definir C(τ) = c_FN · FN + c_FP · FP y minimizarla sobre los umbrales evaluados.</div>
+      <div class="flashcard-grid" style="margin-top:0.8rem">
+        <div class="flashcard parcial" onclick="reveal(this)">
+          <div class="fc-front">¿Por qué bajar el umbral en screening médico?</div>
+          <div class="fc-back">Un FN (no detectar cáncer real) es mucho más grave que un FP (derivar innecesariamente a pruebas adicionales). Un τ bajo maximiza el Recall, capturando todos los positivos reales aunque aumente el número de falsas alarmas.</div>
+          <span class="fc-hint">clic para ver</span>
+        </div>
+        <div class="flashcard parcial" onclick="reveal(this)">
+          <div class="fc-front">¿Qué ventaja tiene la curva ROC sobre el accuracy?</div>
+          <div class="fc-back">La curva ROC evalúa el clasificador en todos los umbrales simultáneamente. El accuracy solo mide un umbral específico y es engañoso con clases desbalanceadas (un clasificador que predice siempre la clase mayoritaria puede tener accuracy alto).</div>
+          <span class="fc-hint">clic para ver</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  SECCIÓN 3 — VALIDACIÓN CRUZADA                        -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section id="s3">
+  <span class="badge parcial">Tercer Parcial</span>
+  <h2>3 — Validación Cruzada y Optimización de Hiperparámetros</h2>
+
+  <div class="card open">
+    <div class="card-header" onclick="toggle(this)">
+      <h3>Estrategias de validación</h3>
+      <span class="card-arrow">▼</span>
+    </div>
+    <div class="card-body">
+      <table>
+        <tr><th>Estrategia</th><th>Ventaja</th><th>Desventaja</th></tr>
+        <tr><td><strong>Holdout 80/20</strong></td><td>Simple y rápido</td><td>Alta varianza si n es pequeño</td></tr>
+        <tr><td><strong>k-fold CV</strong></td><td>Uso eficiente de datos</td><td>k veces más costoso</td></tr>
+        <tr><td><strong>k-fold repetida</strong></td><td>Estimación muy estable</td><td>50× más costoso</td></tr>
+        <tr><td><strong>LOO-CV</strong></td><td>Sin sesgo, máximo uso de datos</td><td>n entrenamientos; alta varianza</td></tr>
+      </table>
+      <div class="tip">Usar <strong>CV estratificada</strong> siempre que las clases estén desbalanceadas — garantiza que cada fold conserve la proporción original de clases.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header" onclick="toggle(this)">
+      <h3>Data leakage y Pipeline</h3>
+      <span class="card-arrow">▼</span>
+    </div>
+    <div class="card-body">
+      <div class="warn"><strong>Error clásico:</strong> ajustar el StandardScaler sobre todo el dataset antes de dividir train/test. El scaler aprende estadísticas del test set → estimación artificialmente optimista.</div>
+      <div class="tip"><strong>Corrección:</strong> usar <span class="pill">Pipeline([('scaler', StandardScaler()), ('clf', modelo)])</span> — el scaler se ajusta solo con datos de train en cada fold interno de GridSearchCV.</div>
+      <ul>
+        <li><strong>C en LogisticRegression:</strong> C = 1/λ. C pequeño → regularización fuerte → menos sobreajuste. C grande → regularización débil → más flexibilidad.</li>
+        <li><strong>L1 (Lasso):</strong> produce coeficientes exactamente 0 (selección de variables). Solo funciona con <span class="pill">solver='liblinear'</span> en sklearn.</li>
+        <li><strong>L2 (Ridge):</strong> encoge coeficientes pero raramente los anula. Más estable numéricamente.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header" onclick="toggle(this)">
+      <h3>⚡ Preguntas frecuentes</h3>
+      <span class="card-arrow">▼</span>
+    </div>
+    <div class="card-body">
+      <div class="flashcard-grid">
+        <div class="flashcard parcial" onclick="reveal(this)">
+          <div class="fc-front">¿Por qué evaluar en datos de entrenamiento es optimista?</div>
+          <div class="fc-back">El modelo aprende a reproducir exactamente esas observaciones —ruido incluido. La métrica mide memorización, no generalización. Un modelo sobreajustado puede tener error 0 en train y error alto en datos nuevos.</div>
+          <span class="fc-hint">clic para ver</span>
+        </div>
+        <div class="flashcard parcial" onclick="reveal(this)">
+          <div class="fc-front">¿En qué paso exacto ocurre el data leakage?</div>
+          <div class="fc-back">Al llamar scaler.fit(X_todo) antes de dividir train/test. El scaler calcula media y desviación estándar usando información del test set, que debería ser desconocida durante el entrenamiento.</div>
+          <span class="fc-hint">clic para ver</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  SECCIÓN 4 — ÁRBOLES DE DECISIÓN                       -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section id="s4">
+  <span class="badge parcial">Tercer Parcial</span>
+  <h2>4 — Árboles de Decisión y Pruning</h2>
+
+  <div class="card open">
+    <div class="card-header" onclick="toggle(this)">
+      <h3>Impureza de Gini y ganancia</h3>
+      <span class="card-arrow">▼</span>
+    </div>
+    <div class="card-body">
+      <div class="formula-box">
+        \[ \text{Gini}(t) = 1 - \sum_{k} p_k^2 \]
+        \[ \text{Ganancia} = \text{Gini}(\text{padre}) - \sum_j \frac{n_j}{n} \text{Gini}(j) \]
+      </div>
+      <ul>
+        <li>Gini = 0 → nodo puro (una sola clase)</li>
+        <li>Gini = 0.5 → máxima impureza (clases equiprobables en problema binario)</li>
+        <li>Se elige el split que <strong>maximiza la ganancia</strong> (mayor reducción de impureza)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header" onclick="toggle(this)">
+      <h3>Sobreajuste y Cost-Complexity Pruning (CCP)</h3>
+      <span class="card-arrow">▼</span>
+    </div>
+    <div class="card-body">
+      <div class="formula-box">
+        \[ R_\alpha(T) = R(T) + \alpha \cdot |T| \]
+        <p style="font-size:0.85rem;color:var(--text-light);margin-top:0.4rem">R(T) = error del árbol, |T| = número de hojas, α = hiperparámetro de complejidad</p>
+      </div>
+      <table>
+        <tr><th></th><th>Pre-pruning</th><th>Post-pruning (CCP)</th></tr>
+        <tr><td><strong>Idea</strong></td><td>Detener crecimiento antes de completarlo</td><td>Crecer árbol completo y luego podar</td></tr>
+        <tr><td><strong>sklearn</strong></td><td><span class="pill">max_depth</span>, <span class="pill">min_samples_split</span></td><td><span class="pill">ccp_alpha</span></td></tr>
+        <tr><td><strong>Ventaja</strong></td><td>Más rápido</td><td>Encuentra subárboles óptimos</td></tr>
+      </table>
+      <div class="tip">α → 0: árbol completo. α → ∞: árbol de un solo nodo. α* óptimo se elige por CV.</div>
+      <div class="tip"><strong>Interpretabilidad es argumento técnico:</strong> en contextos médicos y regulatorios (RGPD) se exige explicabilidad. Un árbol podado permite auditar cada decisión.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  SECCIÓN 5 — KNN REGRESOR                              -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section id="s5">
+  <span class="badge final">Examen Final</span>
+  <h2>5 — KNN-Regresor y Árbol de Regresión</h2>
+
+  <div class="card open">
+    <div class="card-header" onclick="toggle(this)">
+      <h3>KNN-Regresor: estandarización y predicción</h3>
+      <span class="card-arrow">▼</span>
+    </div>
+    <div class="card-body">
+      <div class="warn"><strong>Siempre estandarizar antes de KNN.</strong> Sin estandarizar, la variable con mayor escala domina el cálculo de distancias y las demás son ignoradas.</div>
+      <div class="formula-box purple">
+        \[ \hat{y}(x^*) = \frac{1}{k}\sum_{i \in N_k} y_i \quad \text{(no ponderado)} \]
+        \[ \hat{y}(x^*) = \frac{\sum_{i \in N_k} w_i y_i}{\sum_{i \in N_k} w_i}, \quad w_i = \frac{1}{d_i} \quad \text{(ponderado)} \]
+      </div>
+      <table>
+        <tr><th>k pequeño (k=1)</th><th>k grande (k=n)</th></tr>
+        <tr><td>Alta varianza, bajo sesgo → sobreajuste</td><td>Baja varianza, alto sesgo → predice siempre ȳ</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header" onclick="toggle(this)">
+      <h3>Árbol de regresión: splits por MSE</h3>
+      <span class="card-arrow">▼</span>
+    </div>
+    <div class="card-body">
+      <div class="formula-box purple">
+        \[ \Delta = \text{MSE}_\text{padre} - \left(\frac{n_L}{n}\text{MSE}_L + \frac{n_R}{n}\text{MSE}_R\right) \]
+      </div>
+      <ul>
+        <li>A diferencia de clasificación, usa <strong>reducción de MSE</strong> (no Gini/entropía)</li>
+        <li>Predice la <strong>media de y</strong> en cada hoja → función escalonada (constante por trozos)</li>
+        <li>Sin restricciones: R²=1 en train (memoriza cada punto) → sobreajuste severo</li>
+        <li>Limitación vs. regresión lineal: necesita muchas hojas para capturar relaciones suaves</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header" onclick="toggle(this)">
+      <h3>⚡ Preguntas frecuentes</h3>
+      <span class="card-arrow">▼</span>
+    </div>
+    <div class="card-body">
+      <div class="flashcard-grid">
+        <div class="flashcard final" onclick="reveal(this)">
+          <div class="fc-front">¿Por qué GridSearchCV usa neg_mean_squared_error?</div>
+          <div class="fc-back">GridSearchCV siempre maximiza el scoring. Como queremos minimizar el MSE, se pasa en negativo: maximizar −MSE equivale a minimizar MSE.</div>
+          <span class="fc-hint">clic para ver</span>
+        </div>
+        <div class="flashcard final" onclick="reveal(this)">
+          <div class="fc-front">¿Cuándo elegiría KNN sobre un árbol para producción?</div>
+          <div class="fc-back">En datasets medianos donde la interpretabilidad no es crítica y el tiempo de predicción es aceptable. En datasets grandes, KNN tiene costo O(n·d) por predicción, lo que lo hace inviable sin índices especiales (KD-tree).</div>
+          <span class="fc-hint">clic para ver</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  SECCIÓN 6 — K-MEANS                                   -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section id="s6">
+  <span class="badge final">Examen Final</span>
+  <h2>6 — Clustering con K-means</h2>
+
+  <div class="card open">
+    <div class="card-header" onclick="toggle(this)">
+      <h3>Algoritmo y convergencia</h3>
+      <span class="card-arrow">▼</span>
+    </div>
+    <div class="card-body">
+      <ol style="padding-left:1.2rem;font-size:0.92rem;color:var(--text-light)">
+        <li style="margin-bottom:0.4rem">Inicializar K centroides (aleatorio o K-means++)</li>
+        <li style="margin-bottom:0.4rem">Asignar cada punto al centroide más cercano (distancia euclidiana)</li>
+        <li style="margin-bottom:0.4rem">Recalcular centroides como la media de los puntos asignados</li>
+        <li>Repetir 2-3 hasta que las asignaciones no cambien</li>
+      </ol>
+      <div class="formula-box purple">
+        \[ \text{WCSS} = \sum_{k=1}^{K}\sum_{x_i \in C_k}\|x_i - \mu_k\|^2 \]
+      </div>
+      <div class="tip"><strong>K-means++:</strong> selecciona centroides iniciales con probabilidad proporcional a la distancia al cuadrado al centroide más cercano ya elegido → reduce riesgo de mínimos locales.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header" onclick="toggle(this)">
+      <h3>Selección de K: codo y silueta</h3>
+      <span class="card-arrow">▼</span>
+    </div>
+    <div class="card-body">
+      <div class="two-col">
+        <div>
+          <strong>Método del codo</strong>
+          <ul style="margin-top:0.3rem">
+            <li>Graficar inercia vs. K</li>
+            <li>Buscar el "codo" donde la reducción marginal es pequeña</li>
+            <li>La inercia siempre decrece con K → no minimizar directamente</li>
+          </ul>
+        </div>
+        <div>
+          <strong>Coeficiente de silueta</strong>
+          <div class="formula-box purple" style="margin-top:0.3rem">
+            \[ s(i) = \frac{b(i)-a(i)}{\max(a(i),b(i))} \in [-1,1] \]
+          </div>
+          <ul>
+            <li>a(i): distancia media dentro del cluster</li>
+            <li>b(i): distancia media al cluster más cercano</li>
+            <li>s→1: bien asignado; s→−1: mal asignado</li>
+          </ul>
+        </div>
+      </div>
+      <div class="warn"><strong>Limitaciones estructurales de K-means:</strong> (1) asume clusters esféricos/convexos; (2) sensible a outliers (usa medias). Ningún criterio de selección de K puede corregir esto.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  SECCIÓN 7 — DBSCAN                                    -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section id="s7">
+  <span class="badge final">Examen Final</span>
+  <h2>7 — Clustering con DBSCAN</h2>
+
+  <div class="card open">
+    <div class="card-header" onclick="toggle(this)">
+      <h3>Tipos de puntos y parámetros</h3>
+      <span class="card-arrow">▼</span>
+    </div>
+    <div class="card-body">
+      <table>
+        <tr><th>Tipo</th><th>Condición</th><th>Rol</th></tr>
+        <tr><td><strong>Core point</strong></td><td>≥ minPts vecinos dentro de ε (incl. sí mismo)</td><td>Define y expande el cluster</td></tr>
+        <tr><td><strong>Border point</strong></td><td>&lt; minPts vecinos, pero vecino de un core</td><td>Pertenece al cluster, no lo define</td></tr>
+        <tr><td><strong>Noise point</strong></td><td>No es core ni vecino de ningún core</td><td>Ruido — etiqueta −1 en sklearn</td></tr>
+      </table>
+      <div class="tip"><strong>Regla práctica para ε:</strong> graficar la distancia al k-ésimo vecino más cercano para todos los puntos y buscar el codo. Para minPts: usar 2·dimensiones como punto de partida.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header" onclick="toggle(this)">
+      <h3>K-means vs. DBSCAN — cuándo usar cada uno</h3>
+      <span class="card-arrow">▼</span>
+    </div>
+    <div class="card-body">
+      <table>
+        <tr><th>Escenario</th><th>Algoritmo</th><th>Razón</th></tr>
+        <tr><td>Clusters de forma arbitraria (lunas, anillos)</td><td><strong>DBSCAN</strong></td><td>Sigue densidad local, no asume esfericidad</td></tr>
+        <tr><td>K conocido, clusters compactos</td><td><strong>K-means</strong></td><td>Más eficiente, centroides interpretables</td></tr>
+        <tr><td>Detección de anomalías</td><td><strong>DBSCAN</strong></td><td>Clasifica outliers como ruido explícitamente</td></tr>
+        <tr><td>Dataset muy grande con clusters esféricos</td><td><strong>K-means</strong></td><td>Menor costo computacional</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header" onclick="toggle(this)">
+      <h3>⚡ Preguntas frecuentes</h3>
+      <span class="card-arrow">▼</span>
+    </div>
+    <div class="card-body">
+      <div class="flashcard-grid">
+        <div class="flashcard final" onclick="reveal(this)">
+          <div class="fc-front">¿Por qué K-means falla con las lunas crecientes?</div>
+          <div class="fc-back">K-means minimiza la distancia euclidiana al centroide y asume clusters convexos y esféricos. Las lunas no tienen un centroide representativo: la frontera de Voronoi (recta) corta ambas lunas en lugar de seguir su curvatura.</div>
+          <span class="fc-hint">clic para ver</span>
+        </div>
+        <div class="flashcard final" onclick="reveal(this)">
+          <div class="fc-front">¿Qué significa label == −1 en DBSCAN de sklearn?</div>
+          <div class="fc-back">Es la convención de sklearn para marcar puntos de ruido (noise points). Son puntos que no tienen suficientes vecinos dentro del radio ε para ser core points ni están en la vecindad de ningún core point.</div>
+          <span class="fc-hint">clic para ver</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!--  SECCIÓN 8 — REDES NEURONALES                          -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section id="s8">
+  <span class="badge final">Examen Final</span>
+  <h2>8 — Redes Neuronales: Perceptrón, Activación y Backpropagation</h2>
+
+  <div class="card open">
+    <div class="card-header" onclick="toggle(this)">
+      <h3>Perceptrón y problema XOR</h3>
+      <span class="card-arrow">▼</span>
+    </div>
+    <div class="card-body">
+      <div class="formula-box purple">
+        \[ z = w_1 x_1 + w_2 x_2 + b, \qquad \hat{y} = \sigma(z) \]
+      </div>
+      <div class="warn"><strong>Limitación del perceptrón de una capa:</strong> solo puede aprender funciones linealmente separables. XOR no lo es — los puntos de clase 0 y clase 1 no se pueden separar con una recta.</div>
+      <div class="tip"><strong>Solución:</strong> agregar capas ocultas. Aprenden representaciones intermedias h = f(Wx+b) que transforman el espacio de entrada hasta hacerlo linealmente separable.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header" onclick="toggle(this)">
+      <h3>Funciones de activación</h3>
+      <span class="card-arrow">▼</span>
+    </div>
+    <div class="card-body">
+      <table>
+        <tr><th>Función</th><th>Rango</th><th>Cuándo usarla</th></tr>
+        <tr><td><strong>Sigmoide</strong> \(\sigma(z)=\frac{1}{1+e^{-z}}\)</td><td>(0, 1)</td><td>Salida clasificación binaria</td></tr>
+        <tr><td><strong>Tanh</strong></td><td>(−1, 1)</td><td>Capas ocultas (centrada en 0)</td></tr>
+        <tr><td><strong>ReLU</strong> \(\max(0,z)\)</td><td>[0, ∞)</td><td>Capas ocultas redes profundas</td></tr>
+        <tr><td><strong>Softmax</strong></td><td>(0,1), suma=1</td><td>Salida clasificación multiclase</td></tr>
+        <tr><td><strong>Lineal</strong></td><td>ℝ</td><td>Salida regresión</td></tr>
+      </table>
+      <div class="warn"><strong>Vanishing gradient:</strong> sigmoide y tanh tienen derivadas ≤ 0.25. En redes profundas, multiplicar repetidamente valores pequeños → gradiente → 0 → capas lejanas no aprenden.</div>
+      <div class="tip"><strong>ReLU mitiga el problema:</strong> derivada = 1 para z&gt;0, el gradiente pasa sin atenuación. Problema: neuronas muertas (dying ReLU) cuando z≤0 permanentemente.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header" onclick="toggle(this)">
+      <h3>Backpropagation y regla de la cadena</h3>
+      <span class="card-arrow">▼</span>
+    </div>
+    <div class="card-body">
+      <ol style="padding-left:1.2rem;font-size:0.92rem;color:var(--text-light)">
+        <li style="margin-bottom:0.4rem"><strong>Forward pass:</strong> propagar la entrada capa por capa → calcular error L(y, ŷ)</li>
+        <li style="margin-bottom:0.4rem"><strong>Backward pass:</strong> propagar el error hacia atrás calculando gradiente local en cada capa</li>
+        <li><strong>Actualizar pesos:</strong> w ← w − η · ∂L/∂w</li>
+      </ol>
+      <div class="formula-box purple">
+        \[ \frac{\partial L}{\partial w_1} = \frac{\partial L}{\partial \hat{y}} \cdot \frac{\partial \hat{y}}{\partial h} \cdot \frac{\partial h}{\partial w_1} \quad \text{(regla de la cadena)} \]
+      </div>
+      <div class="tip">ReLU en z=0 no es diferenciable → se usa subgradiente = 0. En la práctica, z=0 exacto ocurre con probabilidad medida cero → impacto negligible.</div>
+      <div class="flashcard-grid" style="margin-top:0.8rem">
+        <div class="flashcard final" onclick="reveal(this)">
+          <div class="fc-front">¿Qué función de pérdida usar en clasificación multiclase?</div>
+          <div class="fc-back">sparse_categorical_crossentropy cuando las etiquetas son enteros (0,1,2...). categorical_crossentropy cuando están en formato one-hot. Ambas miden −log(p_clase_real), penalizando predicciones con baja probabilidad en la clase correcta.</div>
+          <span class="fc-hint">clic para ver</span>
+        </div>
+        <div class="flashcard final" onclick="reveal(this)">
+          <div class="fc-front">¿Cómo diagnosticar sobreajuste en curvas de entrenamiento?</div>
+          <div class="fc-back">Señal clásica: val_loss sube mientras train_loss sigue bajando, con brecha creciente entre ambas curvas. Técnicas para mitigarlo: Dropout, Early Stopping, regularización L2 en las capas Dense.</div>
+          <span class="fc-hint">clic para ver</span>
+        </div>
+        <div class="flashcard final" onclick="reveal(this)">
+          <div class="fc-front">¿Por qué Flatten antes de las capas Dense en MNIST?</div>
+          <div class="fc-back">MNIST son imágenes 28×28 (matrices). Las capas Dense esperan vectores 1D. Flatten convierte cada imagen en un vector de 784 valores sin perder información, permitiendo que la red densa procese cada píxel como una entrada.</div>
+          <span class="fc-hint">clic para ver</span>
+        </div>
+        <div class="flashcard final" onclick="reveal(this)">
+          <div class="fc-front">¿Por qué es indispensable la regla de la cadena en backprop?</div>
+          <div class="fc-back">La pérdida L no depende de w₁ directamente sino a través de composiciones de funciones (L→ŷ→h→w₁). La regla de la cadena permite descomponer ∂L/∂w₁ en un producto de derivadas locales que se pueden calcular capa por capa.</div>
+          <span class="fc-hint">clic para ver</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<script>
+  function toggle(header) {
+    const card = header.parentElement;
+    card.classList.toggle('open');
+  }
+  function reveal(card) {
+    card.classList.toggle('revealed');
+    const hint = card.querySelector('.fc-hint');
+    if (card.classList.contains('revealed')) {
+      hint.textContent = 'clic para ocultar';
+    } else {
+      hint.textContent = 'clic para ver';
+    }
+  }
+</script>
+</body>
+</html>
